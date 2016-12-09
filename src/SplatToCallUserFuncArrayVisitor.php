@@ -2,6 +2,18 @@
 
 namespace Bhittani\PhpParser;
 
+/**
+ * This file is part of the Bhittani\PhpParser package.
+ *
+ * @package    Bhittani\PhpParser
+ * @subpackage SplatToCallUserFuncArrayVisitor
+ * @author     Kamal Khan <shout@bhittani.com>
+ * @version    1.x
+ * @link       https://github.com/kamalkhan/php-parser
+ * @copyright  2016 Kamal Khan
+ * @license    https://github.com/kamalkhan/php-parser/blob/master/LICENSE
+ */
+
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Name;
