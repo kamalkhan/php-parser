@@ -48,18 +48,18 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         if ($node instanceof Stmt\Namespace_) {
             $this->cancelNext = true;
             $this->namespaceNode = $node->name;
-        } else if ($node instanceOf Stmt\GroupUse) {
+        } elseif ($node instanceof Stmt\GroupUse) {
             $this->cancelNext = true;
             foreach ($node->uses as $use) {
                 $this->importNodes[] = Name::concat($node->prefix, $use->name);
             }
-        } else if ($node instanceOf Stmt\Use_) {
+        } elseif ($node instanceof Stmt\Use_) {
             foreach ($node->uses as $use) {
                 $this->importNodes[] = $use->name;
             }
-        } else if ($node instanceOf Stmt\UseUse) {
+        } elseif ($node instanceof Stmt\UseUse) {
             $this->forceSuffix = true;
-        } else if ($node instanceOf Expr\FuncCall) {
+        } elseif ($node instanceof Expr\FuncCall) {
             $this->cancelNext = true;
         }
     }
@@ -71,12 +71,12 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             || $node instanceof Stmt\Trait_
         ) {
             $node->name = $node->name . $this->suffix;
-        } else if ($node instanceof Name) {
+        } elseif ($node instanceof Name) {
             if (!$this->cancelNext) {
                 return $this->addSuffix($node);
             }
             $this->cancelNext = false;
-        } else if ($node instanceOf Stmt\Use_) {
+        } elseif ($node instanceof Stmt\Use_) {
             $this->forceSuffix = false;
         }
     }

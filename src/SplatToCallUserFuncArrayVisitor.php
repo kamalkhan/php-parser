@@ -82,17 +82,17 @@ class SplatToCallUserFuncArrayVisitor extends NodeVisitorAbstract
         if ($node instanceof Expr\FuncCall) {
             $callee = new Scalar\String_($node->name);
             return $this->splatToCallUserFuncArray($callee, $variables);
-        } else if ($node instanceof Expr\MethodCall) {
+        } elseif ($node instanceof Expr\MethodCall) {
             if ($node->var instanceof Expr\New_) {
                 $var = $node->var;
-            } else if ($node->var instanceof Expr\Variable) {
+            } elseif ($node->var instanceof Expr\Variable) {
                 $var = new Expr\Variable($node->var->name);
             } else {
                 return;
             }
             $callee = new Expr\Array_([$var,new Scalar\String_($node->name)]);
             return $this->splatToCallUserFuncArray($callee, $variables);
-        } else if ($node instanceof Expr\StaticCall) {
+        } elseif ($node instanceof Expr\StaticCall) {
             $var = new Expr\ClassConstFetch($node->class, 'class');
             if ($this->useStringifiedStaticCalls) {
                 $var = $this->classConstToStrVisitor->leaveNode($var);

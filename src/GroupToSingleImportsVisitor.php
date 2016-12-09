@@ -19,7 +19,7 @@ class GroupToSingleImportsVisitor extends NodeVisitorAbstract
 
     public function leaveNode(Node $node)
     {
-        if ($node instanceOf Stmt\GroupUse) {
+        if ($node instanceof Stmt\GroupUse) {
             $nodes = [];
             foreach ($node->uses as $use) {
                 $name = Name::concat($node->prefix, $use->name);

@@ -21,15 +21,15 @@ class ClassConstToStrVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Stmt\Namespace_) {
             $this->namespaceNode = $node->name;
-        } else if ($node instanceOf Stmt\GroupUse) {
+        } elseif ($node instanceof Stmt\GroupUse) {
             foreach ($node->uses as $use) {
                 $this->importNodes[] = Name::concat($node->prefix, $use->name);
             }
-        } else if ($node instanceOf Stmt\Use_) {
+        } elseif ($node instanceof Stmt\Use_) {
             foreach ($node->uses as $use) {
                 $this->importNodes[] = $use->name;
             }
-        } else if ($node instanceof Stmt\Class_) {
+        } elseif ($node instanceof Stmt\Class_) {
             $this->classNode = $node;
         }
     }

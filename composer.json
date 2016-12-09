@@ -35,8 +35,8 @@
         "coverage": "phpunit --coverage-text",
         "coverage-html": "phpunit --coverage-html coverage",
         "coverage-clover": "phpunit --coverage-clover clover.xml",
-        "cs-check": "phpcs src",
-        "cs-fix": "phpcbf src",
+        "cs-check": "phpcs --standard=PSR2 src",
+        "cs-fix": "phpcbf --standard=PSR2 src",
         "check": ["@cs-check", "@test"]
     }
 }
