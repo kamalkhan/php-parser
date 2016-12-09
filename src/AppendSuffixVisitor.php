@@ -40,7 +40,7 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
 
     /**
      * Namespace node
-     * @var string|array[\PhpParser\Node\Name]
+     * @var string|\PhpParser\Node\Name
      */
     protected $namespaceNode = '';
 
