@@ -25,7 +25,7 @@ This library may be consumed by using [composer](https://getcomposer.org).
 
 In your terminal, run:
 ```shell
-$ composer install
+$ composer require bhittani/php-parser
 ```
 
 ## Usage
