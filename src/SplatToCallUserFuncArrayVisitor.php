@@ -22,18 +22,39 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * @package Bhittani\PhpParser
+ * @subpackage SplatToCallUserFuncArrayVisitor
+ */
 class SplatToCallUserFuncArrayVisitor extends NodeVisitorAbstract
 {
+    /**
+     * Class constants to stringified visitor.
+     * @var \Bhittani\PhpParser\ClassConstToStrVisitor
+     */
     protected $classConstToStrVisitor;
 
+    /**
+     * Use string version of static calls?
+     * @var boolean
+     */
     protected $useStringifiedStaticCalls = false;
 
+    /**
+     * Whether to use string version of static calls or not.
+     * @param boolean $useStringifiedStaticCalls Use stringified static calls?
+     */
     public function __construct($useStringifiedStaticCalls = false)
     {
-        $this->classConstToStrVisitor = new classConstToStrVisitor;
+        $this->classConstToStrVisitor = new ClassConstToStrVisitor;
         $this->useStringifiedStaticCalls = $useStringifiedStaticCalls;
     }
 
+    /**
+     * Get variables of the splat function call.
+     * @param  array[\PhpParser\Node\Arg] $args Node arguments
+     * @return array[\PhpParser\Node\Expr\Variable] Node variables
+     */
     protected function getSplatCallVars($args)
     {
         $isSplatCall = false;
@@ -45,24 +66,17 @@ class SplatToCallUserFuncArrayVisitor extends NodeVisitorAbstract
             $variables[] = $arg->value;
         }
         if (! $isSplatCall) {
-            return null;
+            return;
         }
         return $variables;
     }
 
-    public function useStringifiedStaticCalls()
-    {
-        $this->useStringifiedStaticCalls = true;
-        return $this;
-    }
-
-    public function enterNode(Node $node)
-    {
-        if ($this->useStringifiedStaticCalls) {
-            $this->classConstToStrVisitor->enterNode($node);
-        }
-    }
-
+    /**
+     * Splact function call to call_user_func_array.
+     * @param  \PhpParser\Node                      $callee    Callee node
+     * @param  array[\PhpParser\Node\Expr\Variable] $variables Node variables
+     * @return \PhpParser\Node\Expr\FuncCall call_user_func_array node
+     */
     protected function splatToCallUserFuncArray($callee, $variables)
     {
         return new Expr\FuncCall(
@@ -77,6 +91,33 @@ class SplatToCallUserFuncArrayVisitor extends NodeVisitorAbstract
         );
     }
 
+    /**
+     * Use string version of static calls.
+     * @return $this Allow chaining
+     */
+    public function useStringifiedStaticCalls()
+    {
+        $this->useStringifiedStaticCalls = true;
+        return $this;
+    }
+
+    /**
+     * Traverse a node when entering.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return void
+     */
+    public function enterNode(Node $node)
+    {
+        if ($this->useStringifiedStaticCalls) {
+            $this->classConstToStrVisitor->enterNode($node);
+        }
+    }
+
+    /**
+     * Traverse a node when leaving.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return \PhpParser\Node\Expr\FuncCall call_user_func_array node
+     */
     public function leaveNode(Node $node)
     {
         // Collect arguments as variables

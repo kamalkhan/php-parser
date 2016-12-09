@@ -19,11 +19,23 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Param;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * @package Bhittani\PhpParser
+ * @subpackage VariadicToFuncGetArgsVisitor
+ */
 class VariadicToFuncGetArgsVisitor extends NodeVisitorAbstract
 {
-    protected function addFuncGetArgs($nodes, $params, $vParam)
+    /**
+     * Construct a func_get_args compatible version of a variadic function.
+     * @param  array[\PhpParser\Node\Stmt]   $nodes   Function statement nodes
+     * @param  array[\PhpParser\Node\Param]  $params  Function param nodes
+     * @param  \PhpParser\Node\Param $vParam Function variadic param
+     * @return \PhpParser\Node\Expr\Assign Assignment node
+     */
+    protected function addFuncGetArgs(array $nodes, array $params, Param $vParam)
     {
         $newNodes = [];
         $newNodes[] = new Expr\Assign(
@@ -42,6 +54,11 @@ class VariadicToFuncGetArgsVisitor extends NodeVisitorAbstract
         return array_merge($newNodes, $nodes);
     }
 
+    /**
+     * Traverse a node when leaving.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return null
+     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Node\FunctionLike) {

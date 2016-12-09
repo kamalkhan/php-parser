@@ -21,14 +21,35 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * @package Bhittani\PhpParser
+ * @subpackage ClassConstToStrVisitor
+ */
 class ClassConstToStrVisitor extends NodeVisitorAbstract
 {
+    /**
+     * Namespace node
+     * @var string|\PhpParser\Node\Name
+     */
     protected $namespaceNode = '';
 
+    /**
+     * Use import nodes
+     * @var array[\PhpParser\Node\Name]
+     */
     protected $importNodes = [];
 
+    /**
+     * Class node
+     * @var \PhpParser\Node\Name
+     */
     protected $classNode;
 
+    /**
+     * Traverse a node when entering.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return void
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Stmt\Namespace_) {
@@ -46,6 +67,11 @@ class ClassConstToStrVisitor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * Traverse a node when leaving.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return \PhpParser\Node\Scalar\String_ Updated node
+     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Expr\ClassConstFetch

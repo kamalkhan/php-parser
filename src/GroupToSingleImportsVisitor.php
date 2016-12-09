@@ -20,8 +20,17 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * @package Bhittani\PhpParser
+ * @subpackage GroupToSingleImportsVisitor
+ */
 class GroupToSingleImportsVisitor extends NodeVisitorAbstract
 {
+    /**
+     * Traverse a node when entering.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return \PhpParser\NodeTraverser Excuse the childrens
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Stmt\Class_) {
@@ -29,6 +38,11 @@ class GroupToSingleImportsVisitor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * Traverse a node when leaving.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return array[\PhpParser\Node\Stmt\Use_] Array of import nodes
+     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Stmt\GroupUse) {

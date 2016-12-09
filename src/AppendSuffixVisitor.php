@@ -118,7 +118,7 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
     /**
      * Traverse a node when leaving.
      * @param  \PhpParser\Node $node Traversing node
-     * @return \PhpParser\Node\Name|null Updated node
+     * @return \PhpParser\Node\Name Updated node
      */
     public function leaveNode(Node $node)
     {
