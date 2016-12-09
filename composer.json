@@ -1,7 +1,7 @@
 {
     "name": "bhittani/php-parser",
     "type": "library",
-    "description": "php syntax parser with backporting down to version 5.3",
+    "description": "Syntax parser with backporting down to php version 5.3",
     "keywords": ["syntax","parser","backporting"],
     "homepage": "http://github.com/kamalkhan/php-parser",
     "license": "MIT",
