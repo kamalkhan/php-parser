@@ -22,22 +22,52 @@ use PhpParser\NodeVisitorAbstract;
 
 class AppendSuffixVisitor extends NodeVisitorAbstract
 {
+    /**
+     * Suffix to append
+     * @var string
+     */
     protected $suffix = '';
 
+    /**
+     * Use import nodes
+     * @var array[\PhpParser\Node\Name]
+     */
     protected $importNodes = [];
 
+    /**
+     * Namespace node
+     * @var string|array[\PhpParser\Node\Name]
+     */
     protected $namespaceNode = '';
 
+    /**
+     * Cancel the next traversal node
+     * @var boolean
+     */
     protected $cancelNext = false;
 
+    /**
+     * Force the next traversal node
+     * @var boolean
+     */
     protected $forceSuffix = false;
 
+    /**
+     * Set the suffix.
+     * @param string $suffix Suffix
+     * @return void
+     */
     public function __construct($suffix)
     {
         $this->suffix = $suffix;
     }
 
-    protected function addSuffix(Name $class)
+    /**
+     * Append a suffix to the node.
+     * @param  \PhpParse\Node\Name $class Name node
+     * @return \PhpParse\Node\Name Appended node
+     */
+    protected function append(Name $class)
     {
         $suffix = $this->suffix;
         if ($class->isFullyQualified()) {
@@ -55,6 +85,11 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         return new Name($class->toString() . $suffix);
     }
 
+    /**
+     * Traverse a node when entering.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return void
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Stmt\Namespace_) {
@@ -76,6 +111,11 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * Traverse a node when leaving.
+     * @param  \PhpParser\Node $node Traversing node
+     * @return \PhpParser\Node\Name|null Updated node
+     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Stmt\Class_
@@ -85,7 +125,7 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             $node->name = $node->name . $this->suffix;
         } elseif ($node instanceof Name) {
             if (!$this->cancelNext) {
-                return $this->addSuffix($node);
+                return $this->append($node);
             }
             $this->cancelNext = false;
         } elseif ($node instanceof Stmt\Use_) {
