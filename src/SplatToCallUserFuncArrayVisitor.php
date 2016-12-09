@@ -79,13 +79,20 @@ class SplatToCallUserFuncArrayVisitor extends NodeVisitorAbstract
      */
     protected function splatToCallUserFuncArray($callee, $variables)
     {
+        $totalVars = count($variables);
+        $splatVar = $variables[$totalVars - 1];
+        $mergeVars = [];
+        for ($i = 0; $i < $totalVars - 1; $i++) {
+            $mergeVars[] = $variables[$i];
+        }
+
         return new Expr\FuncCall(
             new Name('call_user_func_array'),
             [
                 $callee,
                 new Expr\FuncCall(
                     new Name('array_merge'),
-                    $variables
+                    [new Expr\Array_($mergeVars), $splatVar]
                 )
             ]
         );

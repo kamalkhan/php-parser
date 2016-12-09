@@ -15,18 +15,18 @@ class SplatToCallUserFuncArrayVisitorTest extends AbstractTestCase
         $code .= 'Acme::splatCall($a, $b, ...$params);'.PHP_EOL;
         $code .= '$this->splatCall($a, $b, ...$params);'.PHP_EOL;
         $code .= '$user = new User();'.PHP_EOL;
-        $code .= '$user->splatCall($a, $b, ...$params);'.PHP_EOL;
+        $code .= '$user->splatCall($a, \'b\', ...$params);'.PHP_EOL;
         $code .= 'splatCall($a, $b, ...$params);'.PHP_EOL;
         $code .= 'unsplatCall($foo, $bar, $params);';
 
         $expected = '<?php'.PHP_EOL.PHP_EOL;
         $expected .= 'use Foo\Bar\Acme;'.PHP_EOL;
-        $expected .= 'call_user_func_array(array(new Acme(), \'splatCall\'), array_merge($a, $b, $params));'.PHP_EOL;
-        $expected .= 'call_user_func_array(array(Acme::class, \'splatCall\'), array_merge($a, $b, $params));'.PHP_EOL;
-        $expected .= 'call_user_func_array(array($this, \'splatCall\'), array_merge($a, $b, $params));'.PHP_EOL;
+        $expected .= 'call_user_func_array(array(new Acme(), \'splatCall\'), array_merge(array($a, $b), $params));'.PHP_EOL;
+        $expected .= 'call_user_func_array(array(Acme::class, \'splatCall\'), array_merge(array($a, $b), $params));'.PHP_EOL;
+        $expected .= 'call_user_func_array(array($this, \'splatCall\'), array_merge(array($a, $b), $params));'.PHP_EOL;
         $expected .= '$user = new User();'.PHP_EOL;
-        $expected .= 'call_user_func_array(array($user, \'splatCall\'), array_merge($a, $b, $params));'.PHP_EOL;
-        $expected .= 'call_user_func_array(\'splatCall\', array_merge($a, $b, $params));'.PHP_EOL;
+        $expected .= 'call_user_func_array(array($user, \'splatCall\'), array_merge(array($a, \'b\'), $params));'.PHP_EOL;
+        $expected .= 'call_user_func_array(\'splatCall\', array_merge(array($a, $b), $params));'.PHP_EOL;
         $expected .= 'unsplatCall($foo, $bar, $params);';
 
         $this->traverser->addVisitor(new Visitor);
@@ -42,7 +42,7 @@ class SplatToCallUserFuncArrayVisitorTest extends AbstractTestCase
 
         $expected = '<?php'.PHP_EOL.PHP_EOL;
         $expected .= 'use Foo\Bar\Acme;'.PHP_EOL;
-        $expected .= 'call_user_func_array(array(\'Foo\\\Bar\\\Acme\', \'splatCall\'), array_merge($a, $b, $params));';
+        $expected .= 'call_user_func_array(array(\'Foo\\\Bar\\\Acme\', \'splatCall\'), array_merge(array($a, $b), $params));';
 
         $this->traverser->addVisitor(new Visitor(true));
         $this->assertEquals($expected, $this->parse($code));
@@ -57,7 +57,7 @@ class SplatToCallUserFuncArrayVisitorTest extends AbstractTestCase
 
         $expected = '<?php'.PHP_EOL.PHP_EOL;
         $expected .= 'use Foo\Bar\Acme;'.PHP_EOL;
-        $expected .= 'call_user_func_array(array(\'Foo\\\Bar\\\Acme\', \'splatCall\'), array_merge($a, $b, $params));';
+        $expected .= 'call_user_func_array(array(\'Foo\\\Bar\\\Acme\', \'splatCall\'), array_merge(array($a, $b), $params));';
 
         $visitor = (new Visitor())->useStringifiedStaticCalls();
         $this->traverser->addVisitor($visitor);
