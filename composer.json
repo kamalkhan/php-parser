@@ -1,4 +1,17 @@
 {
+    "name": "bhittani/php-parser",
+    "type": "library",
+    "description": "Backport php code syntax down to version 5.4",
+    "keywords": ["parser","backport","traversing"],
+    "homepage": "http://github.com/kamalkhan/php-parser",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "M. Kamal Khan",
+            "email": "shout@bhittani.com",
+            "homepage": "http://bhittani.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Bhittani\\PhpParser\\": "src/"
@@ -10,7 +23,7 @@
         }
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.4,<8.0-DEV",
         "nikic/php-parser": "^2.1"
     },
     "require-dev": {
