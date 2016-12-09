@@ -20,6 +20,10 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Expr;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * @package Bhittani\PhpParser
+ * @subpackage AppendSuffixVisitor
+ */
 class AppendSuffixVisitor extends NodeVisitorAbstract
 {
     /**
