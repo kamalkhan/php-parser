@@ -177,7 +177,7 @@ class Person extends AnAbstract implements Contract, AnotherContract
 {
     use OurTrait;
 
-    use TheirTrait;
+    use Their\Trait;
 
     public function handle(Beep $beep, Model\User $age)
     {
@@ -210,7 +210,7 @@ class Person_1 extends AnAbstract_1 implements Contract_1, AnotherContract_1
 {
     use OurTrait_1;
 
-    use TheirTrait_1;
+    use Their\Trait_1;
 
     public function handle(Beep $beep, Model\User_1 $age)
     {
