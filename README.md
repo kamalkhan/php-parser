@@ -179,10 +179,13 @@ class Person extends AnAbstract implements Contract, AnotherContract
 
     use TheirTrait;
 
-    public function handle(Beep $beep, \Age $age)
+    public function handle(Beep $beep, Model\User $age)
     {
         $foo = new Foo();
         $bar = new Bar();
+        if ($beep->boop()) {
+            throw new Exception('Error thrown.');
+        }
     }
 }
 ```
@@ -209,13 +212,18 @@ class Person_1 extends AnAbstract_1 implements Contract_1, AnotherContract_1
 
     use TheirTrait_1;
 
-    public function handle(Beep $beep, \Age_1 $age)
+    public function handle(Beep $beep, Model\User_1 $age)
     {
         $foo = new Foo();
         $bar = new Bar_1();
+        if ($beep->boop()) {
+            throw new Exception('Error thrown.');
+        }
     }
 }
 ```
+
+> Notice that php's built-in entities won't be suffixed.
 
 ## Test
 Make sure you first CD into the library's root directory.

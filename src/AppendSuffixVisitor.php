@@ -51,10 +51,16 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
     protected $cancelNext = false;
 
     /**
-     * Force the next traversal node
+     * Is an import traversal node
      * @var boolean
      */
-    protected $forceSuffix = false;
+    protected $isImport = false;
+
+    /**
+     * Are we in a group of imports
+     * @var boolean
+     */
+    protected $inGroupImport = false;
 
     /**
      * Set the suffix.
@@ -75,10 +81,17 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
     {
         $suffix = $this->suffix;
         if ($class->isFullyQualified()) {
+            if (count($class->parts) == 1) {
+                return $class;
+            }
             return new Name('\\' . $class->toString() . $suffix);
         }
         // Use force for use import statements.
-        if ($this->forceSuffix || $class->isQualified()) {
+        if ($this->isImport) {
+            if (!$this->inGroupImport && count($class->parts) == 1) {
+                return $class;
+            }
+            // return $class;
             return new Name($class->toString() . $suffix);
         }
         foreach ($this->importNodes as $import) {
@@ -101,6 +114,7 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             $this->namespaceNode = $node->name;
         } elseif ($node instanceof Stmt\GroupUse) {
             $this->cancelNext = true;
+            $this->inGroupImport = true;
             foreach ($node->uses as $use) {
                 $this->importNodes[] = Name::concat($node->prefix, $use->name);
             }
@@ -109,7 +123,7 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
                 $this->importNodes[] = $use->name;
             }
         } elseif ($node instanceof Stmt\UseUse) {
-            $this->forceSuffix = true;
+            $this->isImport = true;
         } elseif ($node instanceof Expr\FuncCall) {
             $this->cancelNext = true;
         }
@@ -133,7 +147,9 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             }
             $this->cancelNext = false;
         } elseif ($node instanceof Stmt\Use_) {
-            $this->forceSuffix = false;
+            $this->isImport = false;
+        } elseif ($node instanceof Stmt\GroupUse) {
+            $this->inGroupImport = false;
         }
     }
 }
