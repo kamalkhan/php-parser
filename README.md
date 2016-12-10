@@ -47,14 +47,14 @@ $traverser->addVisitor(new GroupToSingleImportsVisitor);
 > which will convert
 
 ```php
-use Grouped\Imports\\{Acme, Foo\Bar}
+use Grouped\Imports\{Acme, Foo\Bar}
 ```
 
 > into
 
 ```php
-use Grouped\Imports\Acme
-use Grouped\Imports\Foo\Bar
+use Grouped\Imports\Acme;
+use Grouped\Imports\Foo\Bar;
 ```
 
 #### Splat calls to call_user_func_array
@@ -94,13 +94,17 @@ $traverser->addVisitor(new ClassConstToStrVisitor);
 > which will convert
 
 ```php
-Acme\Foo::class
+use Acme\Foo\Bar;
+
+$barClass = Bar::class;
 ```
 
 > into
 
 ```php
-'Acme\Foo'
+use Acme\Foo\Bar;
+
+$barClass = 'Acme\Foo\Bar';
 ```
 
 #### Variadic to func_get_args
