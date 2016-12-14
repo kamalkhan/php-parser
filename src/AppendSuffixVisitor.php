@@ -162,7 +162,15 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         ) {
             $node->name = $node->name . $this->suffix;
         } elseif ($node instanceof Name) {
-            if (!$this->cancelNext) {
+            $lc = strtolower($node->toString());
+            if (!$this->cancelNext
+                && $lc !== 'false'
+                && $lc !== 'true'
+                && $lc !== 'null'
+                && $lc !== 'self'
+                && $lc !== 'static'
+                && $lc !== 'parent'
+            ) {
                 return $this->appendSuffix($node);
             }
             $this->cancelNext = false;
