@@ -82,4 +82,48 @@ class AppendSuffixVisitorTest extends AbstractTestCase
         $this->traverser->addVisitor(new Visitor('_123'));
         $this->assertEquals($expected, $this->parse($code));
     }
+
+    /** @test */
+    public function it_should_traverse_and_append_a_suffix_via_regex_array()
+    {
+        $code = '<?php'.PHP_EOL.PHP_EOL;
+        $code .= 'namespace Bhittani\PhpParser\Test;'.PHP_EOL.PHP_EOL;
+        $code .= 'use Acme\Bar;'.PHP_EOL;
+        $code .= 'use Acme\Foo\{Bar\Baz, Beep};'.PHP_EOL;
+        $code .= 'use Acme\Boop;'.PHP_EOL;
+        $code .= 'class Skip'.PHP_EOL;
+        $code .= '{'.PHP_EOL;
+        $code .= '    use ATrait;'.PHP_EOL;
+        $code .= '    use \ATrait;'.PHP_EOL;
+        $code .= '    use \Acme\Foo\BoopTrait;'.PHP_EOL;
+        $code .= '    public function foo(Bar $bar, Boop $boop)'.PHP_EOL;
+        $code .= '    {'.PHP_EOL;
+        $code .= '        $a = new Baz(new Beep());'.PHP_EOL;
+        $code .= '        $b = new Acme\Foo();'.PHP_EOL;
+        $code .= '    }'.PHP_EOL;
+        $code .= '}';
+
+        $expected = '<?php'.PHP_EOL.PHP_EOL;
+        $expected .= 'namespace Bhittani\PhpParser\Test;'.PHP_EOL.PHP_EOL;
+        $expected .= 'use Acme\Bar_1 as Bar;'.PHP_EOL;
+        $expected .= 'use Acme\Foo\{Bar\Baz_X as Baz, Beep_X as Beep};'.PHP_EOL;
+        $expected .= 'use Acme\Boop_Y as Boop;'.PHP_EOL;
+        $expected .= 'class Skip_1'.PHP_EOL;
+        $expected .= '{'.PHP_EOL;
+        $expected .= '    use ATrait_1;'.PHP_EOL;
+        $expected .= '    use \ATrait;'.PHP_EOL;
+        $expected .= '    use \Acme\Foo\BoopTrait_X;'.PHP_EOL;
+        $expected .= '    public function foo(Bar $bar, Boop $boop)'.PHP_EOL;
+        $expected .= '    {'.PHP_EOL;
+        $expected .= '        $a = new Baz(new Beep());'.PHP_EOL;
+        $expected .= '        $b = new Acme\Foo_X();'.PHP_EOL;
+        $expected .= '    }'.PHP_EOL;
+        $expected .= '}';
+
+        $this->traverser->addVisitor(new Visitor('_1', [
+            '/^\\\?Acme\\\Foo/' => '_X',
+            '/^\\\?Acme\\\Boop/' => '_Y',
+        ]));
+        $this->assertEquals($expected, $this->parse($code));
+    }
 }

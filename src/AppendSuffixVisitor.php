@@ -33,6 +33,12 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
     protected $suffix = '';
 
     /**
+     * Extra suffix regexes
+     * @var array
+     */
+    protected $extras = [];
+
+    /**
      * Use import nodes
      * @var array[\PhpParser\Node\Name]
      */
@@ -58,18 +64,35 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
 
     /**
      * Are we in a group of imports
-     * @var boolean
+     * @var boolean|\PhpParser\Node\Name
      */
-    protected $inGroupImport = false;
+    protected $groupImport = false;
 
     /**
      * Set the suffix.
-     * @param string $suffix Suffix
+     * @param  string $suffix Suffix
+     * @param  array $extras  Extra suffix regexes
      * @return void
      */
-    public function __construct($suffix)
+    public function __construct($suffix, $extras = [])
     {
         $this->suffix = $suffix;
+        $this->extras = $extras;
+    }
+
+    protected function append(Name $class)
+    {
+        $sanitized = $class;
+        if ($this->groupImport) {
+            $sanitized = Name::concat($this->groupImport, $class);
+        }
+        $sanitized = $sanitized->toString();
+        foreach ($this->extras as $regex => $suffix) {
+            if (preg_match($regex, $sanitized)) {
+                return new Name($class->toString() . $suffix);
+            }
+        }
+        return new Name($class->toString() . $this->suffix);
     }
 
     /**
@@ -77,29 +100,26 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
      * @param  \PhpParse\Node\Name $class Name node
      * @return \PhpParse\Node\Name Appended node
      */
-    protected function append(Name $class)
+    protected function appendSuffix(Name $class)
     {
-        $suffix = $this->suffix;
         if ($class->isFullyQualified()) {
             if (count($class->parts) == 1) {
                 return $class;
             }
-            return new Name('\\' . $class->toString() . $suffix);
+            return $this->append(new Name('\\' . $class->toString()));
         }
-        // Use force for use import statements.
         if ($this->isImport) {
-            if (!$this->inGroupImport && count($class->parts) == 1) {
+            if (!$this->groupImport && count($class->parts) == 1) {
                 return $class;
             }
-            // return $class;
-            return new Name($class->toString() . $suffix);
+            return $this->append($class);
         }
         foreach ($this->importNodes as $import) {
             if (strcmp($import->getLast(), $class->toString()) === 0) {
                 return $class;
             }
         }
-        return new Name($class->toString() . $suffix);
+        return $this->append($class);
     }
 
     /**
@@ -114,7 +134,7 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             $this->namespaceNode = $node->name;
         } elseif ($node instanceof Stmt\GroupUse) {
             $this->cancelNext = true;
-            $this->inGroupImport = true;
+            $this->groupImport = $node->prefix;
             foreach ($node->uses as $use) {
                 $this->importNodes[] = Name::concat($node->prefix, $use->name);
             }
@@ -143,13 +163,13 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             $node->name = $node->name . $this->suffix;
         } elseif ($node instanceof Name) {
             if (!$this->cancelNext) {
-                return $this->append($node);
+                return $this->appendSuffix($node);
             }
             $this->cancelNext = false;
         } elseif ($node instanceof Stmt\Use_) {
             $this->isImport = false;
         } elseif ($node instanceof Stmt\GroupUse) {
-            $this->inGroupImport = false;
+            $this->groupImport = false;
         }
     }
 }
