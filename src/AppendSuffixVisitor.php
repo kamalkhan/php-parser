@@ -158,9 +158,11 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
                 $this->cancelNext = true;
             }
         } elseif ($node instanceof Expr\New_) {
-            $lc = strtolower($node->class->toString());
-            if (in_array($lc, ['static', 'self', 'parent'])) {
-                $this->cancelNext = true;
+            if ($node->class && $node->class instanceof Name) {
+                $lc = strtolower($node->class->toString());
+                if (in_array($lc, ['static', 'self', 'parent'])) {
+                    $this->cancelNext = true;
+                }
             }
         }
     }
