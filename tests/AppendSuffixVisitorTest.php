@@ -44,6 +44,9 @@ class AppendSuffixVisitorTest extends AbstractTestCase
         $code .= '        $Null = Null;'.PHP_EOL;
         $code .= '        $arr = [];'.PHP_EOL;
         $code .= '        require \'require.php\';'.PHP_EOL;
+        $code .= '        $static = static::HELLO;'.PHP_EOL;
+        $code .= '        $static = parent::HELLO;'.PHP_EOL;
+        $code .= '        $static = self::HELLO;'.PHP_EOL;
         $code .= '        $static = static::hello();'.PHP_EOL;
         $code .= '        $STATIC = STATIC::hello();'.PHP_EOL;
         $code .= '        $Static = Static::hello();'.PHP_EOL;
@@ -102,6 +105,9 @@ class AppendSuffixVisitorTest extends AbstractTestCase
         $expected .= '        $Null = Null;'.PHP_EOL;
         $expected .= '        $arr = [];'.PHP_EOL;
         $expected .= '        require \'require.php\';'.PHP_EOL;
+        $expected .= '        $static = static::HELLO;'.PHP_EOL;
+        $expected .= '        $static = parent::HELLO;'.PHP_EOL;
+        $expected .= '        $static = self::HELLO;'.PHP_EOL;
         $expected .= '        $static = static::hello();'.PHP_EOL;
         $expected .= '        $STATIC = STATIC::hello();'.PHP_EOL;
         $expected .= '        $Static = Static::hello();'.PHP_EOL;

@@ -150,6 +150,13 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             $this->cancelNext = true;
         } elseif ($node instanceof Expr\StaticCall) {
             $this->cancelNext = true;
+        } elseif ($node instanceof Expr\StaticPropertyFetch) {
+            // $this->cancelNext = true;
+        } elseif ($node instanceof Expr\ClassConstFetch) {
+            $lc = strtolower($node->class->toString());
+            if (in_array($lc, ['static', 'self', 'parent'])) {
+                $this->cancelNext = true;
+            }
         }
     }
 
@@ -166,7 +173,6 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         ) {
             $node->name = $node->name . $this->suffix;
         } elseif ($node instanceof Name) {
-            $lc = strtolower($node->toString());
             if (!$this->cancelNext) {
                 return $this->appendSuffix($node);
             }
