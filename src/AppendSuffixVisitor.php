@@ -157,6 +157,11 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             if (in_array($lc, ['static', 'self', 'parent'])) {
                 $this->cancelNext = true;
             }
+        } elseif ($node instanceof Expr\New_) {
+            $lc = strtolower($node->class->toString());
+            if (in_array($lc, ['static', 'self', 'parent'])) {
+                $this->cancelNext = true;
+            }
         }
     }
 
