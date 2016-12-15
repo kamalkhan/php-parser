@@ -31,6 +31,7 @@ class AppendSuffixVisitorTest extends AbstractTestCase
         $code .= '    public function add(Bar $bar, SomeClass $z)'.PHP_EOL;
         $code .= '    {'.PHP_EOL;
         $code .= '        $hello = \'hello\';'.PHP_EOL;
+        $code .= '        $static = ABSPATH;'.PHP_EOL;
         $code .= '        $zero = 0;'.PHP_EOL;
         $code .= '        $false = false;'.PHP_EOL;
         $code .= '        $FALSE = FALSE;'.PHP_EOL;
@@ -88,6 +89,7 @@ class AppendSuffixVisitorTest extends AbstractTestCase
         $expected .= '    public function add(Bar $bar, SomeClass_123 $z)'.PHP_EOL;
         $expected .= '    {'.PHP_EOL;
         $expected .= '        $hello = \'hello\';'.PHP_EOL;
+        $expected .= '        $static = ABSPATH;'.PHP_EOL;
         $expected .= '        $zero = 0;'.PHP_EOL;
         $expected .= '        $false = false;'.PHP_EOL;
         $expected .= '        $FALSE = FALSE;'.PHP_EOL;

@@ -146,6 +146,10 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             $this->isImport = true;
         } elseif ($node instanceof Expr\FuncCall) {
             $this->cancelNext = true;
+        } elseif ($node instanceof Expr\ConstFetch) {
+            $this->cancelNext = true;
+        } elseif ($node instanceof Expr\StaticCall) {
+            $this->cancelNext = true;
         }
     }
 
@@ -163,14 +167,7 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             $node->name = $node->name . $this->suffix;
         } elseif ($node instanceof Name) {
             $lc = strtolower($node->toString());
-            if (!$this->cancelNext
-                && $lc !== 'false'
-                && $lc !== 'true'
-                && $lc !== 'null'
-                && $lc !== 'self'
-                && $lc !== 'static'
-                && $lc !== 'parent'
-            ) {
+            if (!$this->cancelNext) {
                 return $this->appendSuffix($node);
             }
             $this->cancelNext = false;
