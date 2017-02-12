@@ -151,7 +151,10 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         } elseif ($node instanceof Expr\StaticCall) {
             $this->cancelNext = true;
         } elseif ($node instanceof Expr\StaticPropertyFetch) {
-            // $this->cancelNext = true;
+            $lc = strtolower($node->class->toString());
+            if (in_array($lc, ['static', 'self', 'parent'])) {
+                $this->cancelNext = true;
+            }
         } elseif ($node instanceof Expr\ClassConstFetch) {
             $lc = strtolower($node->class->toString());
             if (in_array($lc, ['static', 'self', 'parent'])) {
