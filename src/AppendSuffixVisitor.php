@@ -80,19 +80,23 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         $this->extras = $extras;
     }
 
-    protected function append(Name $class)
+    protected function append(Name $name, $precheck = null)
     {
-        $sanitized = $class;
+        $sanitized = $name;
         if ($this->groupImport) {
-            $sanitized = Name::concat($this->groupImport, $class);
+            $sanitized = Name::concat($this->groupImport, $name);
         }
         $sanitized = $sanitized->toString();
+        $found = null;
         foreach ($this->extras as $regex => $suffix) {
-            if (preg_match($regex, $sanitized)) {
-                return new Name($class->toString() . $suffix);
+            if (preg_match($regex, (!is_null($precheck) ? "{$precheck}\\" : '') . $sanitized)) {
+                $found = new Name($name->toString() . $suffix);
             }
         }
-        return new Name($class->toString() . $this->suffix);
+        if (!is_null($found)) {
+            return $found;
+        }
+        return new Name($name->toString() . $this->suffix);
     }
 
     /**
@@ -181,7 +185,12 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
             || $node instanceof Stmt\Interface_
             || $node instanceof Stmt\Trait_
         ) {
-            $node->name = $node->name . $this->suffix;
+            if (empty($this->suffix) && !empty($this->namespaceNode)) {
+                $node->name = $this->append(new Name($node->name), $this->namespaceNode);
+            }
+            else {
+                $node->name = $node->name . $this->suffix;
+            }
         } elseif ($node instanceof Name) {
             if (!$this->cancelNext) {
                 return $this->appendSuffix($node);

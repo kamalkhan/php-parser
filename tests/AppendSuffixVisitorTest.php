@@ -188,4 +188,36 @@ class AppendSuffixVisitorTest extends AbstractTestCase
         ]));
         $this->assertEquals($expected, $this->parse($code));
     }
+
+    /** @test */
+    public function it_should_traverse_and_append_a_suffix_only_via_regex_array()
+    {
+        $code = '<?php'.PHP_EOL.PHP_EOL;
+        $code .= 'namespace Bhittani\PhpParser\Test;'.PHP_EOL.PHP_EOL;
+        $code .= 'class Regular'.PHP_EOL;
+        $code .= '{'.PHP_EOL;
+        $code .= '    public function foo(Bar $bar, Boop $boop)'.PHP_EOL;
+        $code .= '    {'.PHP_EOL;
+        $code .= '        $a = new Baz(new Beep());'.PHP_EOL;
+        $code .= '        $b = new Acme\Foo();'.PHP_EOL;
+        $code .= '    }'.PHP_EOL;
+        $code .= '}';
+
+        $expected = '<?php'.PHP_EOL.PHP_EOL;
+        $expected .= 'namespace Bhittani\PhpParser\Test;'.PHP_EOL.PHP_EOL;
+        $expected .= 'class Regular_X'.PHP_EOL;
+        $expected .= '{'.PHP_EOL;
+        $expected .= '    public function foo(Bar $bar, Boop $boop)'.PHP_EOL;
+        $expected .= '    {'.PHP_EOL;
+        $expected .= '        $a = new Baz(new Beep());'.PHP_EOL;
+        $expected .= '        $b = new Acme\Foo_Y();'.PHP_EOL;
+        $expected .= '    }'.PHP_EOL;
+        $expected .= '}';
+
+        $this->traverser->addVisitor(new Visitor(null, [
+            '/^\\\?Bhittani\\\PhpParser\\\/' => '_X',
+            '/^\\\?Acme\\\/' => '_Y',
+        ]));
+        $this->assertEquals($expected, $this->parse($code));
+    }
 }
