@@ -42,9 +42,9 @@ class AppendRegexVisitor extends NameResolver
     protected function isImported(Name $node)
     {
         foreach ($this->imports as $import) {
-            $importString = $import->name->toString();
+            $importString = $import->original->toString();
             if (stripos($node->toString(), $importString) === 0) {
-                return ($import->alias ? $import->alias : $import->name->getLast())
+                return ($import->alias ? $import->alias : $import->original->getLast())
                     . substr($node->toString(), strlen($importString));
             }
         }
@@ -64,11 +64,15 @@ class AppendRegexVisitor extends NameResolver
         if ($node instanceof Stmt\GroupUse) {
             $this->isGroupImport = true;
             foreach ($node->uses as $use) {
-                $this->imports[] = new Stmt\UseUse(Name::concat($node->prefix, $use->name));
+                $name = Name::concat($node->prefix, $use->name);
+                $inode = new Stmt\UseUse($name, $use->alias);
+                $inode->original = new Name($name->toString());
+                $this->imports[] = $inode;
             }
         } elseif ($node instanceof Stmt\UseUse) {
             if (!$this->isGroupImport) {
                 $this->isImport = true;
+                $node->original = new Name($node->name->toString());
                 $this->imports[] = $node;
             }
         }

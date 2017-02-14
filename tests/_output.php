@@ -25,8 +25,6 @@ class AppendSuffix_1 extends AppendSuffixAbstract_1 implements AppendSuffixInter
     use \Outside\Tr;
     public function add(Bar $bar, SomeClass_1 $z)
     {
-        Tester::go();
-        Tester\Goal::go();
         $hello = 'hello';
         $factory = new static();
         $static = ABSPATH;
@@ -70,5 +68,7 @@ class AppendSuffix_1 extends AppendSuffixAbstract_1 implements AppendSuffixInter
         array_shift([1, 2, 3]);
         throw new \Exception();
         throw new InvalidArgumentException();
+        Tester::go();
+        Tester\Goal::go();
     }
 }
