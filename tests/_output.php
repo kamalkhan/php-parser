@@ -2,7 +2,7 @@
 
 namespace Bhittani\PhpParser\Test;
 
-use Acme\Bar;
+use Acme\Bar_2 as Bar;
 use ArrayAccess;
 use Acme\Foo\{Bar\Baz, Beep as Bong};
 use Acme\Boop as Baar;
