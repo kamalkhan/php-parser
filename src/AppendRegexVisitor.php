@@ -97,6 +97,9 @@ class AppendRegexVisitor extends NameResolver
                 Name::concat($this->namespace, $node->name)
             );
         } elseif ($node instanceof Name) {
+            if ($node->toString() == $this->namespace) {
+                return $node;
+            }
             if ($this->isImport) {
                 return $this->append($node);
             }

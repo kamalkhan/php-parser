@@ -9,7 +9,7 @@ class AppendRegexVisitorTest extends AbstractTestCase
     public function testTest()
     {
         $this->traverser->addVisitor(new Visitor([
-            '/^\\\?Bhittani\\\PhpParser\\\Test\\\/' => '_1',
+            '/^\\\?Bhittani\\\PhpParser\\\Test/' => '_1',
             '/^\\\?Acme\\\Bar/' => '_2',
         ]));
         $this->assertEquals(
