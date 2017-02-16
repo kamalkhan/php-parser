@@ -2,9 +2,9 @@
 
 namespace Bhittani\PhpParser\Tests;
 
-use Bhittani\PhpParser\RelativeToImportVisitor as Visitor;
+use Bhittani\PhpParser\ImportsVisitor as Visitor;
 
-class RelativeToImportTest extends AbstractTestCase
+class ImportsVisitorTest extends AbstractTestCase
 {
     /** @test */
     public function it_should_convert_relative_to_imported_access()
@@ -21,6 +21,7 @@ class RelativeToImportTest extends AbstractTestCase
         $code .= '        new Foo\Fee();'.PHP_EOL;
         $code .= '        new Hello\World\Bye();'.PHP_EOL;
         $code .= '        new \Bye\World\Hello();'.PHP_EOL;
+        $code .= '        throw new \Exception(\'error\');'.PHP_EOL;
         $code .= '    }'.PHP_EOL;
         $code .= '}';
 
@@ -32,6 +33,7 @@ class RelativeToImportTest extends AbstractTestCase
         $expected .= 'use Acme\Foo\Fee;'.PHP_EOL;
         $expected .= 'use Bhittani\PhpParser\Test\Hello\World\Bye;'.PHP_EOL;
         $expected .= 'use Bye\World\Hello;'.PHP_EOL;
+        $expected .= 'use Exception;'.PHP_EOL;
         $expected .= 'use Acme\Foo;'.PHP_EOL;
         $expected .= 'class RelativeImports extends Bar implements Beep, Foo, Baz'.PHP_EOL;
         $expected .= '{'.PHP_EOL;
@@ -42,6 +44,7 @@ class RelativeToImportTest extends AbstractTestCase
         $expected .= '        new Fee();'.PHP_EOL;
         $expected .= '        new Bye();'.PHP_EOL;
         $expected .= '        new Hello();'.PHP_EOL;
+        $expected .= '        throw new Exception(\'error\');'.PHP_EOL;
         $expected .= '    }'.PHP_EOL;
         $expected .= '}';
 

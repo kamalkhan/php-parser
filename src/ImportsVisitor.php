@@ -6,25 +6,24 @@ namespace Bhittani\PhpParser;
  * This file is part of the Bhittani\PhpParser package.
  *
  * @package    Bhittani\PhpParser
- * @subpackage RelativeToImportVisitor
+ * @subpackage ImportsVisitor
  * @author     Kamal Khan <shout@bhittani.com>
  * @version    1.x
  * @link       https://github.com/kamalkhan/php-parser
- * @copyright  2016 Kamal Khan
+ * @copyright  2017 Kamal Khan
  * @license    https://github.com/kamalkhan/php-parser/blob/master/LICENSE
  */
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 
 /**
  * @package Bhittani\PhpParser
- * @subpackage RelativeToImportVisitor
+ * @subpackage ImportsVisitor
  */
-class RelativeToImportVisitor extends NodeVisitorAbstract
+class ImportsVisitor extends NodeVisitorAbstract
 {
     protected $imports = [];
 
