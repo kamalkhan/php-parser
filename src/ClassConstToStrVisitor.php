@@ -45,6 +45,13 @@ class ClassConstToStrVisitor extends NodeVisitorAbstract
      */
     protected $classNode;
 
+    public function beforeTraverse(array $nodes)
+    {
+        $this->classNode = null;
+        $this->importNodes = [];
+        $this->namespaceNode = '';
+    }
+
     /**
      * Traverse a node when entering.
      * @param  \PhpParser\Node $node Traversing node

@@ -59,6 +59,14 @@ class AppendRegexVisitor extends NameResolver
         return stripos($node->toString(), $this->namespace . '\\') === 0;
     }
 
+    public function beforeTraverse(array $nodes)
+    {
+        $this->imports = [];
+        $this->isImport = false;
+        $this->isGroupImport = false;
+        parent::beforeTraverse($nodes);
+    }
+
     public function enterNode(Node $node)
     {
         if ($node instanceof Stmt\GroupUse) {
@@ -93,6 +101,14 @@ class AppendRegexVisitor extends NameResolver
             || $node instanceof Stmt\Trait_
             || $node instanceof Stmt\Function_
         ) {
+			// if (isset($node->extends) && $node->extends) {
+			// 				$node->extends = $this->append($node->extends);
+			// 			}
+			// 			if ($node instanceof Stmt\Class_ && $node->implements) {
+			// 				foreach ($node->implements as & $implement) {
+			// 	                $implement = $this->append($implement);
+			// 	            }
+			// 			}
             $node->name = $this->append(
                 new Name($node->name),
                 Name::concat($this->namespace, $node->name)

@@ -76,6 +76,19 @@ class ImportsVisitor extends NodeVisitorAbstract
         return $node;
     }
 
+	public function beforeTraverse(array $nodes)
+	{
+		$this->imports = [];
+
+	    $this->namespace = null;
+
+	    $this->newImports = [];
+
+	    $this->isImport = false;
+
+	    $this->isGroupImport = false;
+	}
+
     public function enterNode(Node $node)
     {
         if ($node instanceof Stmt\Namespace_) {
@@ -107,10 +120,14 @@ class ImportsVisitor extends NodeVisitorAbstract
             || $node instanceof Stmt\Interface_
             || $node instanceof Stmt\Trait_
         ) {
-            $node->extends = $this->process($node->extends);
-            foreach ($node->implements as & $implement) {
-                $implement = $this->process($implement);
-            }
+			if ($node->extends) {
+				$node->extends = $this->process($node->extends);
+			}
+			if ($node instanceof Stmt\Class_ && $node->implements) {
+				foreach ($node->implements as & $implement) {
+	                $implement = $this->process($implement);
+	            }
+			}
         } elseif ($node instanceof Name && !$this->isImport) {
             if ($node->toString() == $this->namespace) {
                 return $node;

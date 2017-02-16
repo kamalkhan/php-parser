@@ -126,6 +126,15 @@ class AppendSuffixVisitor extends NodeVisitorAbstract
         return $this->append($class);
     }
 
+    public function beforeTraverse(array $nodes)
+    {
+        $this->importNodes = [];
+        $this->namespaceNode = '';
+        $this->cancelNext = false;
+        $this->isImport = false;
+        $this->groupImport = false;
+    }
+
     /**
      * Traverse a node when entering.
      * @param  \PhpParser\Node $node Traversing node
