@@ -91,6 +91,7 @@ class AppendRegexVisitor extends NameResolver
         } elseif ($node instanceof Stmt\Class_
             || $node instanceof Stmt\Interface_
             || $node instanceof Stmt\Trait_
+            || $node instanceof Stmt\Function_
         ) {
             $node->name = $this->append(
                 new Name($node->name),
@@ -108,7 +109,7 @@ class AppendRegexVisitor extends NameResolver
             }
             if ($this->isUnderNamespace($node)) {
                 $node = $this->append($node);
-                return new Name($node->getLast());
+                return new Name(ltrim(substr($node->toString(), strlen($this->namespace)), '\\'));
             }
             return $this->append($node);
         }

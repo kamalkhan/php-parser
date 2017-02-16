@@ -22,6 +22,8 @@
             "Bhittani\\PhpParser\\Tests\\": "tests/"
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=5.4,<8.0-DEV",
         "nikic/php-parser": "^2.1"

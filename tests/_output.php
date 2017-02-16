@@ -18,7 +18,11 @@ abstract class AppendSuffixAbstract_1
 trait AppendSuffixTrait_1
 {
 }
-class AppendSuffix_1 extends AppendSuffixAbstract_1 implements AppendSuffixInterface_1, Baz, Bong\Beep, ArrayAccess
+function func_1()
+{
+    //
+}
+class AppendSuffix_1 extends AppendSuffixAbstract_1 implements Go\Go_1, AppendSuffixInterface_1, Baz, Bong\Beep, ArrayAccess
 {
     use AppendSuffixTrait_1;
     use Baz\BazTrait;
